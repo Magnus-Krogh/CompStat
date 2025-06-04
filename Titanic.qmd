@@ -109,3 +109,21 @@ titanic_aug %>% roc_auc(truth = Survived, .pred_0)
 
 Følgende gøres igen, blot ved randomforest.
 
+Den fittede model, prædiktioner og roc-kurve udregnes med følgende:
+
+```{r}
+fit_rf <- randomForest(Survived ~ Pclass + Sex + Age + LogFare + Embarked, data = train_data, ntree = 5000)
+predictions <- predict(fit_rf, newdata = test_data, type = "prob")[, 2]
+```
+
+Plottet af roc-kurven er givet ved
+
+```{r}
+plot.roc(rf.roc)
+```
+
+Arealet under kurven er
+
+```{r}
+auc(rf.roc)
+```
