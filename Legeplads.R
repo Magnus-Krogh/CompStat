@@ -53,3 +53,4 @@ predictions <- predict(test, newdata = test_data, type = "prob")[, 2]
 rf.roc <- roc(test_data$Survived, predictions, levels = rev(levels(test_data$Survived)))
 auc(rf.roc)
 plot.roc(rf.roc)
+

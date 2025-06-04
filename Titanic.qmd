@@ -5,6 +5,14 @@ format: html
 
 Vi ønsker at kunne prædiktere om der er en sammenhæng mellem de overlevede og deres, alder, køn, klasse samt den pris de gav for billeten. 
 
+```{r}
+library("tidyverse")
+library("tidymodels")
+library("titanic")
+library("randomForest")
+library("pROC")
+```
+
 Datasætte titanic er fra Kaggle. Det består af 891 observartioner med 12 kovariater:
 
 1. Passengerld - ID af passageren. 
@@ -23,7 +31,16 @@ Datasætte titanic er fra Kaggle. Det består af 891 observartioner med 12 kovar
 I Age har vi nogle missing values, som vi fjerner fra analysen. Udover dette vælger vi at se på log(Fare), da vi kigge på priser. Dette gør forholdet mellem priserne mere sammenlignelige. Grundet dette fjernes observationerne som er lig 0. 
 For at kunne analysere data, omdanner vi 4 af kovariaerne (Pclass, Sex,Embarked og Survived) til factores.
 
-
+```{r}
+data <- titanic_train %>% 
+  drop_na() %>%
+  filter(Fare != 0) %>%
+  mutate(Pclass = as.factor(Pclass)) %>%
+  mutate(Sex = as.factor(Sex)) %>%
+  mutate(Embarked = as.factor(Embarked)) %>%
+  mutate(Survived = as.factor(Survived)) %>%
+  mutate(LogFare = log(Fare))
+```
 
 For at se om der er en sammenhæng mellem de overlede, og deres alder, samt pris de har givet for billet, plotter vi Age mod log(Fare). 
 
