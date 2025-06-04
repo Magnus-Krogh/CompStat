@@ -1,5 +1,10 @@
-library(tidyverse)
-library(tidymodels)
+library("tidyverse")
+library("tidymodels")
+library("titanic")
+
+View(titanic_train)
+
+head(titanic_train, n = 6)
 
 data <- titanic_train %>% 
   drop_na() %>%
