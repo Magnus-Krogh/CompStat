@@ -1,11 +1,13 @@
 library("tidyverse")
 library("tidymodels")
 library("titanic")
+library("randomForest")
+library("pROC")
 
 View(titanic_train)
 
 head(titanic_train, n = 6)
-
+class(titanic_train$Embarked)
 data <- titanic_train %>% 
   drop_na() %>%
   filter(Fare != 0) %>%
@@ -20,7 +22,8 @@ data %>%
   ggplot(aes(Age, LogFare, group = Survived, color = Survived)) +
   geom_point(alpha = 0.5) +
   geom_smooth(method = lm, se = FALSE, aes(color = Survived)) +
-  theme_minimal()
+  theme_minimal() + labs(title = "Age and Fare (log scale) with Survived") +
+  scale_color_manual(label = c("No", "Yes"), values = c("red", "blue"))
 
 lr_mod <- 
   logistic_reg() %>%
