@@ -1,6 +1,8 @@
 library("tidyverse")
 library("tidymodels")
 library("titanic")
+library("randomForest")
+library("pROC")
 
 View(titanic_train)
 
@@ -50,3 +52,4 @@ predictions <- predict(test, newdata = test_data, type = "prob")[, 2]
 rf.roc <- roc(test_data$Survived, predictions, levels = rev(levels(test_data$Survived)))
 auc(rf.roc)
 plot.roc(rf.roc)
+
