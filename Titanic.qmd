@@ -5,8 +5,27 @@ format: html
 
 Vi ønsker at kunne prædiktere om der er en sammenhæng mellem de overlevede og deres, alder, køn, klasse samt den pris de gav for billeten. 
 
-Datasætte titanic er fra Kaggle. Det består af 12 kovariater
-(@) test 1
-(@) test 2
-og 891 observartioner. 
-Datasættet er splitte op i et testsæt og et traningsæt. 
+Datasætte titanic er fra Kaggle. Det består af 891 observartioner med 12 kovariater:
+
+1. Passengerld - ID af passageren. 
+2. Survived - numeric, 0 = ikke overlevede, 1= overlevede. 
+3. Pclass - integer, beskrive hvilken klasse de fra, 1,2 og 3.
+4. Name - character, fulde navn.
+5. Sex - character.
+6. Age - numeric.
+7. SibSp - interger, antal søskende/ægtefælle.
+8. Parch - interger, forældre/barn.
+9. Ticket - character, billetnummer. 
+10. Fare - numeric, pris på billet.
+11. Cabin - character, navn på kabine de boede i. 
+12. Embarked - character, hvor de steg på.
+
+I Age har vi nogle missing values, som vi fjerner fra analysen. Udover dette vælger vi at se på log(Fare), da vi kigge på priser. Dette gør forholdet mellem priserne mere sammenlignelige. Grundet dette fjernes observationerne som er lig 0. 
+For at kunne analysere data, omdanner vi 4 af kovariaerne (Pclass, Sex,Embarked og Survived) til factores.
+
+
+
+For at se om der er en sammenhæng mellem de overlede, og deres alder, samt pris de har givet for billet, plotter vi Age mod log(Fare). 
+
+Ses at jo yngre man er jo større er chacen for at overleve, samt jo mere man har givet for billet jo større er chacen for overlevelse.
+Datasættet er splittet op i et testsæt og et traningsæt. 
