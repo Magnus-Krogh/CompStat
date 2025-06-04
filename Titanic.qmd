@@ -112,8 +112,10 @@ Følgende gøres igen, blot ved randomforest.
 Den fittede model, prædiktioner og roc-kurve udregnes med følgende:
 
 ```{r}
+set.seed(10)
 fit_rf <- randomForest(Survived ~ Pclass + Sex + Age + LogFare + Embarked, data = train_data, ntree = 5000)
 predictions <- predict(fit_rf, newdata = test_data, type = "prob")[, 2]
+rf.roc <- roc(test_data$Survived, predictions, levels = rev(levels(test_data$Survived)))
 ```
 
 Plottet af roc-kurven er givet ved
