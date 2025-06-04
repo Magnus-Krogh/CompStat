@@ -3,4 +3,10 @@ title: "Titanic"
 format: html
 ---
 
-Test
+Vi ønsker at kunne prædiktere om der er en sammenhæng mellem de overlevede og deres, alder, køn, klasse samt den pris de gav for billeten. 
+
+Datasætte titanic er fra Kaggle. Det består af 12 kovariater
+(@) test 1
+(@) test 2
+og 891 observartioner. 
+Datasættet er splitte op i et testsæt og et traningsæt. 
