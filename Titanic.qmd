@@ -64,6 +64,7 @@ data %>%
 Vi opsplitter nu datasættet er splittet i et testsæt og et traningsæt.
 
 ```{r}
+set.seed(12)
 data_split <- initiaæ_split(data, prop = 3/4)
 train_data <- training(data_split)
 test_data <- testing(data_split)
@@ -87,17 +88,24 @@ wflow <- workflow() %>%
 Modellen fittes nu på train_data og estimaterne for parametrene kan ses som output i nedstående kode
 
 ```{r}
-fit <- wflow %>% fit(data = train_data)
-fit %>% extract_fit_parsnip()%>%tidy()
+fit_log <- wflow %>% fit(data = train_data)
+fit_og %>% extract_fit_parsnip()%>%tidy()
 ```
 
 Det ses ud fra p-værdierne, at Age, Sex og Pclass er signifikante, hvilket ikke overrasker.
 
+Vi plotter nu roc kurven for den locistiske regression, trænet på train_data og prædikteret på test_data
+
 ```{r}
-titanic_aug <- augment(fit, test_data)
+titanic_aug <- augment(fit_log, test_data)
 titanic_aug %>% roc_curve(truth = Survived, .pred_0) %>% autoplot() 
 ```
+
+Arealet under denne kurve er givet ved følgende kode.
 
 ```{r}
 titanic_aug %>% roc_auc(truth = Survived, .pred_0)
 ```
+
+Følgende gøres igen, blot ved randomforest.
+
