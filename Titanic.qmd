@@ -65,7 +65,7 @@ Vi opsplitter nu datasættet er splittet i et testsæt og et traningsæt.
 
 ```{r}
 set.seed(12)
-data_split <- initiaæ_split(data, prop = 3/4)
+data_split <- initial_split(data, prop = 3/4)
 train_data <- training(data_split)
 test_data <- testing(data_split)
 ```
@@ -76,7 +76,7 @@ Vi bruger logistisk regression og randomforest til at prædiktere datasættet, o
 
 ```{r}
 lr_mod <- logistic_reg()%>%
-  set_engien("glm")
+  set_engine("glm")
 
 rec <- recipe(Survived ~ Pclass + Sex + Age + LogFare + Embarked, data = train_data)
 
@@ -89,7 +89,7 @@ Modellen fittes nu på train_data og estimaterne for parametrene kan ses som out
 
 ```{r}
 fit_log <- wflow %>% fit(data = train_data)
-fit_og %>% extract_fit_parsnip()%>%tidy()
+fit_log %>% extract_fit_parsnip()%>%tidy()
 ```
 
 Det ses ud fra p-værdierne, at Age, Sex og Pclass er signifikante, hvilket ikke overrasker.
