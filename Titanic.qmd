@@ -28,6 +28,12 @@ Datasætte titanic er fra Kaggle. Det består af 891 observartioner med 12 kovar
 11. Cabin - character, navn på kabine de boede i. 
 12. Embarked - character, hvor de steg på.
 
+
+Nedenunder ses 7 observationer fra datasættet. Bemærk ved Id 6, at der er en NA værdi. 
+```{r}
+head(titanic_train, n=7)
+```
+
 I Age har vi nogle missing values, som vi fjerner fra analysen. Udover dette vælger vi at se på log(Fare), da vi kigge på priser. Dette gør forholdet mellem priserne mere sammenlignelige. Grundet dette fjernes observationerne som er lig 0. 
 For at kunne analysere data, omdanner vi 4 af kovariaerne (Pclass, Sex,Embarked og Survived) til factores.
 
@@ -41,6 +47,7 @@ data <- titanic_train %>%
   mutate(Survived = as.factor(Survived)) %>%
   mutate(LogFare = log(Fare))
 ```
+Efter vi har fjerne Na, samt Fare = 0 værdierne, har vi 707 observationer tilbage.
 
 For at se om der er en sammenhæng mellem de overlede, og deres alder, samt pris de har givet for billet, plotter vi Age mod log(Fare).
 
@@ -54,5 +61,32 @@ data %>%
 
 ```
 
-Ses at jo yngre man er jo større er chacen for at overleve, samt jo mere man har givet for billet jo større er chacen for overlevelse.
-Datasættet er splittet op i et testsæt og et traningsæt. 
+Vi opsplitter nu datasættet er splittet i et testsæt og et traningsæt.
+
+```{r}
+data_split <- initiaæ_split(data, prop = 3/4)
+train_data <- training(data_split)
+test_data <- testing(data_split)
+```
+I train_data har vi 530 observationer og i test_data har vi 177.
+
+Vi bruger logistisk regression og randomforest til at prædiktere datasættet, og benytter rockurven til at vælge fortrukende algoritme.
+
+```{r}
+lr_mod <- logistic_reg()%>%
+  set_engien("glm")
+
+rec <- recipe(Survived ~ Pclass + Sex + Age + LogFare + Embarked, data = train_data)
+
+wflow <- workflow() %>%
+  add_model(lr_mod) %>% 
+  add_recipe(rec)
+```
+
+Modellen fittes nu på train_data og estimaterne for parametrene kan ses som output i nedstående kode
+```{r}
+fit <- wflow %>% fit(data = train_data)
+fit %>% extract_fit_parsnip()%>%tidy()
+```
+Det ses ud fra p-værdierne, at Age, Sex og Pclass er signifikante, hvilket ikke overrasker.
+
