@@ -1,7 +1,12 @@
 ---
 title: "Titanic"
 format: html
+authors: 
+  - Magnus Nygaard Krogh 
+  - Henriette Bjørn
+  - Maria Andersen
 ---
+Dette er udarbejdet af Magnus Nygaard Krogh, Henriette Bjørn og Maria Andersen.
 
 Vi ønsker at kunne prædiktere om der er en sammenhæng mellem de overlevede og deres, alder, køn, klasse samt den pris de gav for billeten.
 
@@ -11,6 +16,7 @@ library("tidymodels")
 library("titanic")
 library("randomForest")
 library("pROC")
+library("caret")
 ```
 
 Datasætte titanic er fra Kaggle. Det består af 891 observartioner med 12 kovariater:
@@ -129,3 +135,11 @@ Arealet under kurven er
 ```{r}
 auc(rf.roc)
 ```
+
+For locistisk regression har vi opnået en auc værdi på 0.8962 (afrundet til fire signifikante cifre), mens for randomforest har vi opnået en auc værdi på 0.8744.
+
+confusionmatricen for locistisk regressions modellen er givet ved følgende
+```{r}
+confusionMatrix(titanic_aug$.pred_class, test_data$Survived)[2]
+```
+
