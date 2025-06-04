@@ -3,7 +3,7 @@ title: "Titanic"
 format: html
 ---
 
-Vi ønsker at kunne prædiktere om der er en sammenhæng mellem de overlevede og deres, alder, køn, klasse samt den pris de gav for billeten. 
+Vi ønsker at kunne prædiktere om der er en sammenhæng mellem de overlevede og deres, alder, køn, klasse samt den pris de gav for billeten.
 
 ```{r}
 library("tidyverse")
@@ -15,27 +15,26 @@ library("pROC")
 
 Datasætte titanic er fra Kaggle. Det består af 891 observartioner med 12 kovariater:
 
-1. Passengerld - ID af passageren. 
-2. Survived - numeric, 0 = ikke overlevede, 1= overlevede. 
-3. Pclass - integer, beskrive hvilken klasse de fra, 1,2 og 3.
-4. Name - character, fulde navn.
-5. Sex - character.
-6. Age - numeric.
-7. SibSp - interger, antal søskende/ægtefælle.
-8. Parch - interger, forældre/barn.
-9. Ticket - character, billetnummer. 
+1.  Passengerld - ID af passageren.
+2.  Survived - numeric, 0 = ikke overlevede, 1= overlevede.
+3.  Pclass - integer, beskrive hvilken klasse de fra, 1,2 og 3.
+4.  Name - character, fulde navn.
+5.  Sex - character.
+6.  Age - numeric.
+7.  SibSp - interger, antal søskende/ægtefælle.
+8.  Parch - interger, forældre/barn.
+9.  Ticket - character, billetnummer.
 10. Fare - numeric, pris på billet.
-11. Cabin - character, navn på kabine de boede i. 
+11. Cabin - character, navn på kabine de boede i.
 12. Embarked - character, hvor de steg på.
 
+Nedenunder ses 7 observationer fra datasættet. Bemærk ved Id 6, at der er en NA værdi.
 
-Nedenunder ses 7 observationer fra datasættet. Bemærk ved Id 6, at der er en NA værdi. 
 ```{r}
 head(titanic_train, n=7)
 ```
 
-I Age har vi nogle missing values, som vi fjerner fra analysen. Udover dette vælger vi at se på log(Fare), da vi kigge på priser. Dette gør forholdet mellem priserne mere sammenlignelige. Grundet dette fjernes observationerne som er lig 0. 
-For at kunne analysere data, omdanner vi 4 af kovariaerne (Pclass, Sex,Embarked og Survived) til factores.
+I Age har vi nogle missing values, som vi fjerner fra analysen. Udover dette vælger vi at se på log(Fare), da vi kigge på priser. Dette gør forholdet mellem priserne mere sammenlignelige. Grundet dette fjernes observationerne som er lig 0. For at kunne analysere data, omdanner vi 4 af kovariaerne (Pclass, Sex,Embarked og Survived) til factores.
 
 ```{r}
 data <- titanic_train %>% 
@@ -47,6 +46,7 @@ data <- titanic_train %>%
   mutate(Survived = as.factor(Survived)) %>%
   mutate(LogFare = log(Fare))
 ```
+
 Efter vi har fjerne Na, samt Fare = 0 værdierne, har vi 707 observationer tilbage.
 
 For at se om der er en sammenhæng mellem de overlede, og deres alder, samt pris de har givet for billet, plotter vi Age mod log(Fare).
@@ -68,6 +68,7 @@ data_split <- initiaæ_split(data, prop = 3/4)
 train_data <- training(data_split)
 test_data <- testing(data_split)
 ```
+
 I train_data har vi 530 observationer og i test_data har vi 177.
 
 Vi bruger logistisk regression og randomforest til at prædiktere datasættet, og benytter rockurven til at vælge fortrukende algoritme.
@@ -84,9 +85,19 @@ wflow <- workflow() %>%
 ```
 
 Modellen fittes nu på train_data og estimaterne for parametrene kan ses som output i nedstående kode
+
 ```{r}
 fit <- wflow %>% fit(data = train_data)
 fit %>% extract_fit_parsnip()%>%tidy()
 ```
+
 Det ses ud fra p-værdierne, at Age, Sex og Pclass er signifikante, hvilket ikke overrasker.
 
+```{r}
+titanic_aug <- augment(fit, test_data)
+titanic_aug %>% roc_curve(truth = Survived, .pred_0) %>% autoplot() 
+```
+
+```{r}
+titanic_aug %>% roc_auc(truth = Survived, .pred_0)
+```
